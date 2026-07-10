@@ -1,7 +1,7 @@
 PlaneSpottersSource
         │
         ▼
-Aircraft (validated Pydantic model)
+    Aircraft
         │
         ▼
 Fleet (collection + domain behaviors)
@@ -10,7 +10,7 @@ Fleet (collection + domain behaviors)
 FleetAnalyzer (analytics engine)
         │
         ▼
-ReportGenerator
+  ReportGenerator
         │
         ▼
-CLI
+       CLI
