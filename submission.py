@@ -171,8 +171,6 @@ class AirlineAnalyzer:
 
     @staticmethod
     def airline_score(airline: Airline) -> float:
-        # Composite score created for this project.
-        # Combines fleet modernity, fleet size and operational experience.
         age = AirlineAnalyzer.age_score(airline)
 
         fleet = min(airline.fleet_size / 30, 10)
@@ -277,10 +275,6 @@ class ReportGenerator:
 
     @staticmethod
     def export_png(summary: dict, filename: str):
-        # IMPROVEMENT: the original chart put Fleet Size (hundreds) on the
-        # same axis as Average Fleet Age / Years in Service / Score (single
-        # to double digits), which made everything but Fleet Size invisible.
-        # Splitting into two panels by scale keeps every bar readable.
         fig, axes = plt.subplots(1, 2, figsize=(10, 5))
 
         scale_metrics = {
