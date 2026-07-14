@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Airline Intelligence CLI
 
 #### Video Demo: https://youtu.be/YOUR_VIDEO_LINK
@@ -104,3 +105,21 @@ Several improvements are planned for future versions:
 - Build a web interface while keeping the analytics engine unchanged.
 
 This project combines object-oriented programming, API integration, data validation, analytical computation, report generation, and automated testing into a complete airline analytics application.
+=======
+PlaneSpottersSource
+        │
+        ▼
+    Aircraft
+        │
+        ▼
+Fleet (collection + domain behaviors)
+        │
+        ▼
+FleetAnalyzer (analytics engine)
+        │
+        ▼
+  ReportGenerator
+        │
+        ▼
+       CLI
+>>>>>>> refs/remotes/origin/main
