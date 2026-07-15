@@ -18,7 +18,7 @@ The application offers five main features:
 - Exit the application.
 
 /!\ NOTE: In order to be able to work with this simple program and get the results, you'll need an API Key from the website : https://aviationstack.com
-the aviationstack website offers a free api key, while the aviation data set is limited and not up to date!
+and put it in a .env file and name it AVIATIONSTACK_API_KEY. The aviationstack website offers a free api key, while the aviation data set is limited and not up to date!
 
 ## Project Architecture
 
