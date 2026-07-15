@@ -17,6 +17,9 @@ The application offers five main features:
 - Export a graphical PNG summary using Matplotlib.
 - Exit the application.
 
+/!\ NOTE: In order to be able to work with this simple program and get the results, you'll need an API Key from the website : https://aviationstack.com
+the aviationstack website offers a free api key, while the aviation data set is limited and not up to date!
+
 ## Project Architecture
 
 The project follows an object-oriented design where each class has a single responsibility.
