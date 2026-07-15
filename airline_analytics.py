@@ -275,35 +275,84 @@ class ReportGenerator:
 
     @staticmethod
     def export_png(summary: dict, filename: str):
-        fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-
-        scale_metrics = {
-            "Fleet Size": summary["Fleet Size"],
-            "Years in Service": summary["Years in Service"],
+        from matplotlib.patches import FancyBboxPatch
+ 
+        accent, dark, grey = "#0B3D91", "#111827", "#6B7280"
+        card_bg, border, neutral = "#F3F4F6", "#E5E7EB", "#E5E7EB"
+        status_colors = {
+            "Modern": "#16A34A", "Balanced": "#D97706", "Aging": "#DC2626",
+            "Excellent": "#16A34A", "Good": "#D97706", "Needs Renewal": "#DC2626",
+            "Unknown": "#9CA3AF",
         }
-
-        rating_metrics = {
-            "Avg Fleet Age": summary["Average Fleet Age"],
-            "Overall Score": summary["Overall Airline Score"],
-        }
-
-        bars1 = axes[0].bar(scale_metrics.keys(), scale_metrics.values(), color="steelblue")
-        axes[0].bar_label(bars1)
-        axes[0].set_title("Scale")
-
-        bars2 = axes[1].bar(rating_metrics.keys(), rating_metrics.values(), color="darkorange")
-        axes[1].bar_label(bars2)
-        axes[1].set_title("Ratings")
-
-        for ax in axes:
-            ax.tick_params(axis="x", rotation=20)
-
-        fig.suptitle(summary["Name"])
-
-        plt.tight_layout()
-
-        plt.savefig(filename)
-
+ 
+        def box(ax, x, y, w, h, color, rounding=0.02):
+            ax.add_patch(FancyBboxPatch((x, y), w, h,
+                         boxstyle=f"round,pad=0,rounding_size={rounding}",
+                         linewidth=0, facecolor=color))
+ 
+        fig = plt.figure(figsize=(8, 6.6), facecolor="white")
+        ax = fig.add_axes([0, 0, 1, 1])
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis("off")
+ 
+        ax.text(0.06, 0.94, summary["Name"], fontsize=22, fontweight="bold",
+                 color=dark, ha="left", va="top")
+        ax.text(0.06, 0.88, f'{summary["IATA"]} · {summary["ICAO"]}  |  {summary["Country"]}',
+                 fontsize=11, color=grey, ha="left", va="top")
+        ax.plot([0.06, 0.94], [0.83, 0.83], color=border, linewidth=1)
+ 
+        ax.text(0.06, 0.79, "KEY METRICS", fontsize=9.5, color=grey, fontweight="bold")
+        kpis = [
+            (summary["Fleet Size"], "Fleet Size"),
+            (summary["Average Fleet Age"], "Avg. Fleet Age"),
+            (summary["Years in Service"], "Years in Service"),
+        ]
+        x = 0.06
+        for value, label in kpis:
+            box(ax, x, 0.6, 0.27, 0.17, card_bg)
+            ax.text(x + 0.135, 0.71, str(value), fontsize=20, fontweight="bold",
+                     color=accent, ha="center", va="center")
+            ax.text(x + 0.135, 0.65, label, fontsize=9.5, color=grey, ha="center", va="center")
+            x += 0.29
+ 
+        ax.text(0.06, 0.535, "OVERALL SCORE", fontsize=9.5, color=grey, fontweight="bold")
+        score = summary["Overall Airline Score"]
+        numeric_score = score if isinstance(score, (int, float)) else 0
+        score_color = "#16A34A" if numeric_score >= 7 else "#D97706" if numeric_score >= 4 else "#DC2626"
+        box(ax, 0.06, 0.46, 0.88, 0.045, "#E5E7EB")
+        fill_w = max(0.88 * min(numeric_score, 10) / 10, 0.045)
+        box(ax, 0.06, 0.46, fill_w, 0.045, score_color)
+        ax.text(0.94, 0.4825, f"{score} / 10", fontsize=11, fontweight="bold",
+                 color=dark, ha="right", va="center")
+ 
+        ax.text(0.06, 0.375, "CLASSIFICATION", fontsize=9.5, color=grey, fontweight="bold")
+        badges = [
+            (summary["Fleet Category"], neutral),
+            (summary["Fleet Health"], status_colors.get(summary["Fleet Health"], neutral)),
+            (summary["Operational Maturity"], neutral),
+            (summary["Fleet Efficiency"], status_colors.get(summary["Fleet Efficiency"], neutral)),
+        ]
+        x = 0.06
+        for label, color in badges:
+            w = 0.05 + len(str(label)) * 0.013
+            box(ax, x, 0.3, w, 0.058, color, rounding=0.03)
+            ax.text(x + w / 2, 0.329, str(label), fontsize=9, fontweight="bold",
+                     color="white" if color != neutral else dark, ha="center", va="center")
+            x += w + 0.02
+ 
+        ax.plot([0.06, 0.94], [0.225, 0.225], color=border, linewidth=1)
+        footer = [
+            ("HUB", summary["Hub"]), ("FOUNDED", summary["Founded"]),
+            ("STATUS", summary["Status"]), ("TYPE", summary["Type"]),
+        ]
+        x = 0.06
+        for label, value in footer:
+            ax.text(x, 0.17, label, fontsize=8, color=grey, fontweight="bold")
+            ax.text(x, 0.1, str(value), fontsize=10.5, color=dark)
+            x += 0.23
+ 
+        plt.savefig(filename, dpi=200, bbox_inches="tight", facecolor="white")
         plt.close(fig)
 
 
