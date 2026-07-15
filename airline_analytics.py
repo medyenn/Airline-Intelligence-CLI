@@ -48,8 +48,10 @@ class AviationStackSource(DataSource):
 
         try:
             nlst = name.split(' ')
-            if len(nlst) == 2:
-                slug = f'{nlst[0].title()}%20{nlst[1].title()}'
+            slug = ''
+            if len(nlst) >= 2:
+                for word in nlst:
+                    slug += f'{word.title()}%20' if nlst[-1] != word else word.title()
             elif len(nlst) == 1:
                 slug = nlst[0].title()
             response = requests.get(f'{API_URL}{API_KEY}&airline_name={slug}')
